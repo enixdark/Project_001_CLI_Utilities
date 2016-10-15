@@ -7,25 +7,31 @@ const {dir} = require('yargs')
               .argv
 
 async function ls(rootPath) {
-  // console.log(rootPath)
-  await fs.stat(rootPath, async (err, check) => {
-    if(err) return
+  try{
+    let check = await fs.stat(rootPath)
     if(check.isFile()){
-      process.stdout.write(rootPath + "\n")
-      return rootPath
+      // process.stdout.write(rootPath + "\n")
+      return [rootPath]
     }
-    let fileNames = await fs.readdir(rootPath)
-    R.forEach( file => {
-      let filePath = path.join(__dirname, file)
-      ls(filePath)
-    }, fileNames)
-  })
+  }
+  catch(e){
+    return []
+  }
+  let lsPromises = []
+  R.forEach( file => {
+      let promise = ls(file)
+      // console.log(promise)
+      lsPromises.push(promise)
+
+  }, await fs.readdir(rootPath))
+  return await Promise.all(lsPromises)
 }
 
 async function main() {
     // Call ls() and pass dir, remember to await
     console.log('Executing ls function...')
-    await ls(dir)
+    let filePaths = await ls(dir)
+    console.log(R.flatten(filePaths).join('\n'))
 }
 
 main()
