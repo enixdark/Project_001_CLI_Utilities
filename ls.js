@@ -2,38 +2,47 @@
 
 require('./helper')
 const fs = require('fs').promise
-const R = require('ramda')
+const RL = require('ramda')
 const path = require('path')
-const {dir} = require('yargs')
+const {R, dir} = require('yargs')
               .default('dir', __dirname)
+              .describe('R', 'Specify a process to recursion with path')
+              .array("R")
+              .alias('R', 'recursion')
+              .nargs('R', 0)
               .argv
+
 
 async function ls(rootPath) {
   try{
     let check = await fs.stat(rootPath)
-    if(check.isFile() || (check.isDirectory() && rootPath != dir)){
-      // process.stdout.write(rootPath + "\n")
-      return [rootPath]
+    if(check.isFile() && R){
+      return [rootPath.replace(`${dir}/`,'')]
+    }
+    else if(check.isFile() || (check.isDirectory() && rootPath != dir) && !R){
+      return [rootPath.replace(`${dir}/`,'')]
     }
   }
   catch(e){
     return []
   }
   let lsPromises = []
-  R.forEach( file => {
-      let promise = ls(file)
-      // console.log(promise)
+  let filenames = await fs.readdir(rootPath)
+  RL.forEach( file => {
+      let promise = ls(path.join(rootPath,file))
+      // console.log(file)
       lsPromises.push(promise)
 
-  }, await fs.readdir(rootPath))
+  }, filenames)
   return await Promise.all(lsPromises)
 }
 
 async function main() {
     // Call ls() and pass dir, remember to await
     console.log('Executing ls function...')
+    // console.log(path.join(__dirname, dir))
     let filePaths = await ls(dir)
-    console.log(R.flatten(filePaths).join('\n'))
+    console.log(RL.flatten(filePaths))
 }
 
 main()
