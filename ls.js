@@ -6,20 +6,26 @@ const {dir} = require('yargs')
               .default('dir', __dirname)
               .argv
 
-
-async function ls() {
-  // Use 'await' inside 'async function's
-  console.log('Executing ls function...')
-
-  // Your implementation here
-  let fileNames = await fs.readdir(dir)
-  // debugger
-  R.forEach( file => {
-    let filePath = path.join(__dirname, file)
-    process.stdout.write(filePath + "\n")
-
-  }, fileNames)
-
+async function ls(rootPath) {
+  // console.log(rootPath)
+  await fs.stat(rootPath, async (err, check) => {
+    if(err) return
+    if(check.isFile()){
+      process.stdout.write(rootPath + "\n")
+      return rootPath
+    }
+    let fileNames = await fs.readdir(rootPath)
+    R.forEach( file => {
+      let filePath = path.join(__dirname, file)
+      ls(filePath)
+    }, fileNames)
+  })
 }
 
-ls()
+async function main() {
+    // Call ls() and pass dir, remember to await
+    console.log('Executing ls function...')
+    await ls(dir)
+}
+
+main()
