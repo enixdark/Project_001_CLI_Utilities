@@ -1,3 +1,5 @@
+#!/usr/bin/env babel-node
+
 require('./helper')
 const fs = require('fs').promise
 const R = require('ramda')
@@ -9,7 +11,7 @@ const {dir} = require('yargs')
 async function ls(rootPath) {
   try{
     let check = await fs.stat(rootPath)
-    if(check.isFile()){
+    if(check.isFile() || (check.isDirectory() && rootPath != dir)){
       // process.stdout.write(rootPath + "\n")
       return [rootPath]
     }
