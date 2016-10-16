@@ -17,7 +17,6 @@ async function mkdir() {
             }
             catch(e){
               process.stdout.write(`mkdir: cannot create directory ${new_path}: File exists \n`)
-              return await new_path
             }
             return new_path
           },__dirname,path_folders)

@@ -1,15 +1,16 @@
-#!/usr/bin/env node
+#!/usr/bin/env babel-node
 
 require('./helper')
 let fs = require('fs').promise
+let argv = require('yargs').argv
+
 
 async function echo() {
-    // Use 'await' in here
-    // Your implementation here
+    
     // console.log(await fs.readFile(__filename, console.log))
-    let argv = await process.argv
-    if(argv.length > 2){
-      process.stdout.write(argv.slice(2).join(' ') + "\n")
+    // let _argv = await process.argv
+    if(argv._.length > 0){
+      process.stdout.write(argv._.join(' ') + "\n")
     }
 }
 

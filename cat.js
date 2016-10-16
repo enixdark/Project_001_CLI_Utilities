@@ -3,23 +3,23 @@
 require('./helper')
 let fs = require('fs').promise
 let R = require('ramda')
+let path = require('path')
+let argv = require('yargs').argv
 
 async function cat() {
-    // Use 'await' in here
-    // Your implementation here
     // console.log(await fs.readFile(__filename, console.log))
-    let argv = await process.argv
-    if(argv.length > 2){
+    if(argv._.length > 0){
       R.forEach( async file => {
         try{
-          let data = await fs.readFile(file, 'utf8')
+          let data = await fs.readFile(path.join(__dirname,file), 'utf8')
           process.stdout.write(data)
         }
         catch(e){
           process.stdout.write(`cat: ${file}: No such file or directory\n\n`)
         }
-      }, argv.slice(2))
+      }, argv._)
     }
 }
 
 cat()
+

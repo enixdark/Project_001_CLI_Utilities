@@ -10,6 +10,7 @@ const {R, dir} = require('yargs')
               .array("R")
               .alias('R', 'recursion')
               .nargs('R', 0)
+              .help()
               .argv
 
 
