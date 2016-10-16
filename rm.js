@@ -10,7 +10,7 @@ async function rm(rootPath) {
   let check = await fs.stat(rootPath)
   if(check.isFile()){
     await fs.unlink(rootPath)
-    return [rootPath]
+    return []
   }
   let promises = []
   if(check.isDirectory()){
@@ -39,13 +39,11 @@ async function main(){
         //   R.flatten, 
         //   R.forEach( x => console.log(x))
         // )(await rm(file))
-       
         R.forEach( 
           d => fs.rmdir(d), 
           R.flatten(await rm(file)).reverse()
         )
       }catch(e){
-        console.log(e)
         process.stdout.write(`rm: cannot remove ${file}: No such file or directory \n`)
       }
     }, argv._)

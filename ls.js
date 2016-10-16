@@ -40,7 +40,7 @@ async function ls(rootPath) {
 
 async function main() {
     // Call ls() and pass dir, remember to await
-    console.log('Executing ls function...')
+    // console.log('Executing ls function...')
     // console.log(path.join(__dirname, dir))
     let filePaths = await ls(dir)
     console.log(RL.flatten(filePaths))
