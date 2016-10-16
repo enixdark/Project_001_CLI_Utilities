@@ -50,5 +50,9 @@
     "eslint-config-noderiety": "^1.1.1",
     "mocha": "^3.0.2",
     "rimraf": "^2.5.4"
+  },
+  "engines": {
+    "node": "6.7.0",
+    "npm": "3.10.8"
   }
 }
