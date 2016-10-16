@@ -4,7 +4,7 @@ require('./helper')
 const fs = require('fs').promise
 const RL = require('ramda')
 const path = require('path')
-const {R, dir} = require('yargs')
+let {R, dir} = require('yargs')
               .default('dir', __dirname)
               .describe('R', 'Specify a process to recursion with path')
               .array("R")
@@ -29,6 +29,7 @@ async function ls(rootPath) {
   }
   let lsPromises = []
   let filenames = await fs.readdir(rootPath)
+  console.log(filenames)
   RL.forEach( file => {
       let promise = ls(path.join(rootPath,file))
       // console.log(file)
@@ -38,12 +39,17 @@ async function ls(rootPath) {
   return await Promise.all(lsPromises)
 }
 
-async function main() {
+async function main(_dir = undefined) {
     // Call ls() and pass dir, remember to await
     // console.log('Executing ls function...')
     // console.log(path.join(__dirname, dir))
-    let filePaths = await ls(dir)
-    console.log(RL.flatten(filePaths))
+    let dir_path = _dir ? _dir : dir
+    dir = dir_path
+    let filePaths = await ls(dir_path)
+    // console.log(await RL.flatten(filePaths))
+    return RL.flatten(filePaths)
 }
 
 main()
+
+module.exports = main
